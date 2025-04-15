@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { TodoService } from '@core/application/services/todo.service';
+import { TodoService } from '@core/services/todo.service';
 import { Todo } from '@core/domain/models/todo.model';
 
 @Component({

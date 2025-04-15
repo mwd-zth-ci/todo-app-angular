@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TodoService } from '@core/application/services/todo.service';
+import { TodoService } from '@core/services/todo.service';
 import { Observable } from 'rxjs';
 import { Todo } from '@core/domain/models/todo.model';
 import { ActivatedRoute } from '@angular/router';

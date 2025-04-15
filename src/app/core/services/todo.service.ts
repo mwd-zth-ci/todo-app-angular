@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { TodoUseCase } from '@core/application/use-cases/todo/todo.usecase';
 import { Store } from '@ngrx/store';
 import { TodoState } from '@store/state/todo.state';
 import { selectTodos } from '@store/selectors/todo.selectors';

@@ -12,7 +12,6 @@ import { todoReducer } from './store/reducers/todo.reducer';
 import { TodoEffects } from './store/effects/todo.effects';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TodoRepositoryImpl } from '@core/infrastructure/repositories/todo.repository.impl';
-import { TodoUseCase } from './core/application/use-cases/todo/todo.usecase';
 import { StorageService } from './shared/infrastructure/services/storage.service';
 import { TODO_REPOSITORY } from '@core/core.tokens';
 
@@ -28,7 +27,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAnimations(),
     TodoRepositoryImpl,
-    TodoUseCase,
     StorageService,
     { provide: TODO_REPOSITORY, useClass: TodoRepositoryImpl }
   ],

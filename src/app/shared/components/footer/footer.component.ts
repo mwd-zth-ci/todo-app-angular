@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
-import { TodoService } from '@core/application/services/todo.service';
+import { TodoService } from '@core/services/todo.service';
 import { CounterComponent } from '../counter/counter.component';
 import { ClearBtnComponent } from '../clear-btn/clear-btn.component';
 
