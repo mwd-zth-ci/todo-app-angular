@@ -5,9 +5,11 @@ import { Store } from '@ngrx/store';
 import { TodoState } from '@store/state/todo.state';
 import { selectTodos } from '@store/selectors/todo.selectors';
 import { map } from 'rxjs/operators';
-import { TODO_REPOSITORY } from '@core/core.module';
+import { TODO_REPOSITORY } from '@core/core.tokens';
 import { Todo } from '@core/domain/models/todo.model';
 import * as TodoActions from '@store/actions/todo.actions';
+import { TodoRepository } from '@core/domain/repositories/todo.repository';
+import { TodoCreateDto, TodoUpdateDto } from '@core/domain/models/todo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +18,37 @@ export class TodoService {
   private filterSubject = new BehaviorSubject<string>('all');
 
   constructor(
-    @Inject(TODO_REPOSITORY) private todoUseCase: TodoUseCase,
+    @Inject(TODO_REPOSITORY) private repository: TodoRepository,
     private store: Store<{ todos: TodoState }>
   ) {}
+
+  getAll(): Observable<Todo[]> {
+    return this.repository.getAll();
+  }
+
+  getById(id: number): Observable<Todo> {
+    return this.repository.getById(id);
+  }
+
+  create(todo: TodoCreateDto): Observable<Todo> {
+    return this.repository.create(todo);
+  }
+
+  update(id: number, todo: TodoUpdateDto): Observable<Todo> {
+    return this.repository.update(id, todo);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.repository.delete(id);
+  }
+
+  toggle(id: number): Observable<Todo> {
+    return this.repository.toggle(id);
+  }
+
+  clearCompleted(): Observable<void> {
+    return this.repository.clearCompleted();
+  }
 
   getTodos(): Observable<Todo[]> {
     return this.store.select(selectTodos);
@@ -65,7 +95,7 @@ export class TodoService {
     this.store.dispatch(TodoActions.deleteTodo({ id }));
   }
 
-  clearCompleted(): void {
+  clearCompletedTodos(): void {
     this.store.dispatch(TodoActions.clearCompleted());
   }
 } 
