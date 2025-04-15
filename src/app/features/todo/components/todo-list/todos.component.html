@@ -1,0 +1,11 @@
+@if (todos$ | async; as todos) {
+  @if (todos.length > 0) {
+    <section class="main">
+      <ul class="todo-list">
+        @for (todo of todos; track todo) {
+          <app-todo [todo]="todo"></app-todo>
+        }
+      </ul>
+    </section>
+  }
+}

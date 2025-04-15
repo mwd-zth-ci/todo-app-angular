@@ -1,0 +1,10 @@
+@if (pendingTodos$ | async; as pendingTodos) {
+  <span class="todo-count">
+    <strong>{{ pendingTodos.length }}</strong>
+    @if (pendingTodos.length === 1) {
+      item left
+    } @else {
+      items left
+    }
+  </span>
+}

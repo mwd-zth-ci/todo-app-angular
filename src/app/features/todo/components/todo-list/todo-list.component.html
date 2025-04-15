@@ -1,0 +1,20 @@
+@if (filteredTodos$ | async; as todos) {
+  <section class="main">
+    <ul class="todo-list">
+      @for (todo of todos; track todo.id) {
+        <li [class.completed]="todo.completed">
+          <div class="view">
+            <input 
+              class="toggle" 
+              type="checkbox" 
+              [checked]="todo.completed"
+              (change)="todoService.toggleTodo(todo.id)"
+            >
+            <label>{{ todo.title }}</label>
+            <button class="destroy" (click)="todoService.deleteTodo(todo.id)"></button>
+          </div>
+        </li>
+      }
+    </ul>
+  </section>
+} 

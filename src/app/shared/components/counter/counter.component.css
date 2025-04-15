@@ -1,0 +1,8 @@
+.todo-count {
+  color: #777;
+  font-size: 14px;
+}
+
+.todo-count strong {
+  font-weight: 300;
+} 

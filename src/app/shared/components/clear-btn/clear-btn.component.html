@@ -1,0 +1,5 @@
+@if (completedTodos$ | async; as completedTodos) {
+  @if (completedTodos.length > 0) {
+    <button (click)="clearCompleted()">Clear completed</button>
+  }
+}

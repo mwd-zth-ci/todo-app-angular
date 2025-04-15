@@ -1,0 +1,19 @@
+@if (todos$ | async; as todos) {
+  @if (todos.length > 0) {
+    <footer class="footer">
+      <app-counter></app-counter>
+      <ul class="filters">
+        <li>
+          <a [class.selected]="(filter$ | async) === 'all'" (click)="todoService.setFilter('all')">All</a>
+        </li>
+        <li>
+          <a [class.selected]="(filter$ | async) === 'active'" (click)="todoService.setFilter('active')">Active</a>
+        </li>
+        <li>
+          <a [class.selected]="(filter$ | async) === 'completed'" (click)="todoService.setFilter('completed')">Completed</a>
+        </li>
+      </ul>
+      <app-clear-btn></app-clear-btn>
+    </footer>
+  }
+}
