@@ -29,24 +29,19 @@ export class TodoService {
     return this.repository.getById(id);
   }
 
-  create(todo: TodoCreateDto): Observable<Todo> {
-    return this.repository.create(todo);
-  }
-
   update(id: number, todo: TodoUpdateDto): Observable<Todo> {
     return this.repository.update(id, todo);
   }
 
-  delete(id: number): Observable<void> {
-    return this.repository.delete(id);
-  }
-
-  toggle(id: number): Observable<Todo> {
-    return this.repository.toggle(id);
-  }
-
-  clearCompleted(): Observable<void> {
-    return this.repository.clearCompleted();
+  clearCompleted(): void {
+    this.repository.clearCompleted().subscribe({
+      next: () => {
+        this.store.dispatch(TodoActions.clearCompleted());
+      },
+      error: (error) => {
+        this.store.dispatch(TodoActions.clearCompletedFailure({ error: error.message }));
+      }
+    });
   }
 
   getTodos(): Observable<Todo[]> {
@@ -74,27 +69,35 @@ export class TodoService {
   }
 
   addTodo(title: string): void {
-    const now = new Date();
-    this.store.dispatch(TodoActions.addTodo({ 
-      todo: { 
-        id: Date.now(), 
-        title, 
-        completed: false,
-        createdAt: now,
-        updatedAt: now
-      } 
-    }));
+    this.repository.create({ title, completed: false }).subscribe({
+      next: (todo) => {
+        this.store.dispatch(TodoActions.addTodoSuccess({ todo }));
+      },
+      error: (error) => {
+        this.store.dispatch(TodoActions.addTodoFailure({ error: error.message }));
+      }
+    });
   }
 
   toggleTodo(id: number): void {
-    this.store.dispatch(TodoActions.toggleTodo({ id }));
+    this.repository.toggle(id).subscribe({
+      next: (todo) => {
+        this.store.dispatch(TodoActions.toggleTodoSuccess({ todo }));
+      },
+      error: (error) => {
+        this.store.dispatch(TodoActions.toggleTodoFailure({ error: error.message }));
+      }
+    });
   }
 
   deleteTodo(id: number): void {
-    this.store.dispatch(TodoActions.deleteTodo({ id }));
-  }
-
-  clearCompletedTodos(): void {
-    this.store.dispatch(TodoActions.clearCompleted());
+    this.repository.delete(id).subscribe({
+      next: () => {
+        this.store.dispatch(TodoActions.deleteTodoSuccess({ id }));
+      },
+      error: (error) => {
+        this.store.dispatch(TodoActions.deleteTodoFailure({ error: error.message }));
+      }
+    });
   }
 } 
