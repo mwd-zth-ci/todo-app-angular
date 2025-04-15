@@ -3,23 +3,23 @@ import { Todo, TodoCreateDto, TodoUpdateDto } from '../models/todo.model';
 import { TodoRepository } from './todo.repository';
 
 describe('TodoRepository Interface', () => {
-  let repository: TodoRepository;
+  let repository: jasmine.SpyObj<TodoRepository>;
 
   beforeEach(() => {
-    repository = {
-      getAll: jest.fn(),
-      getById: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      toggle: jest.fn(),
-      clearCompleted: jest.fn()
-    };
+    repository = jasmine.createSpyObj('TodoRepository', [
+      'getAll',
+      'getById',
+      'create',
+      'update',
+      'delete',
+      'toggle',
+      'clearCompleted'
+    ]);
   });
 
   it('should have getAll method that returns Observable<Todo[]>', () => {
     const todos: Todo[] = [];
-    (repository.getAll as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.getAll.and.returnValue(new Observable(subscriber => {
       subscriber.next(todos);
       subscriber.complete();
     }));
@@ -36,7 +36,7 @@ describe('TodoRepository Interface', () => {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    (repository.getById as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.getById.and.returnValue(new Observable(subscriber => {
       subscriber.next(todo);
       subscriber.complete();
     }));
@@ -46,15 +46,17 @@ describe('TodoRepository Interface', () => {
   });
 
   it('should have create method that returns Observable<Todo>', () => {
-    const dto: TodoCreateDto = { title: 'Test Todo' };
+    const dto: TodoCreateDto = { 
+      title: 'Test Todo',
+      completed: false
+    };
     const todo: Todo = {
       id: 1,
       ...dto,
-      completed: false,
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    (repository.create as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.create.and.returnValue(new Observable(subscriber => {
       subscriber.next(todo);
       subscriber.complete();
     }));
@@ -72,7 +74,7 @@ describe('TodoRepository Interface', () => {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    (repository.update as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.update.and.returnValue(new Observable(subscriber => {
       subscriber.next(todo);
       subscriber.complete();
     }));
@@ -82,7 +84,7 @@ describe('TodoRepository Interface', () => {
   });
 
   it('should have delete method that returns Observable<void>', () => {
-    (repository.delete as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.delete.and.returnValue(new Observable(subscriber => {
       subscriber.next();
       subscriber.complete();
     }));
@@ -99,7 +101,7 @@ describe('TodoRepository Interface', () => {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    (repository.toggle as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.toggle.and.returnValue(new Observable(subscriber => {
       subscriber.next(todo);
       subscriber.complete();
     }));
@@ -109,7 +111,7 @@ describe('TodoRepository Interface', () => {
   });
 
   it('should have clearCompleted method that returns Observable<void>', () => {
-    (repository.clearCompleted as jest.Mock).mockReturnValue(new Observable(subscriber => {
+    repository.clearCompleted.and.returnValue(new Observable(subscriber => {
       subscriber.next();
       subscriber.complete();
     }));

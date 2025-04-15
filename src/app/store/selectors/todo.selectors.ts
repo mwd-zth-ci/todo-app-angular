@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { TodoState } from '../state/todo.state';
+import { TodoState } from '@store/state/todo.state';
 import { Filter } from '@core/domain/models/filter.model';
 import { Todo } from '@core/domain/models/todo.model';
 

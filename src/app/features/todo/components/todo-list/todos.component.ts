@@ -1,12 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Filter } from '../../../../core/domain/models/filter.model';
+import { Filter } from '@core/domain/models/filter.model';
 import { TodoComponent } from '../todo-item/todo.component';
 import { Store } from '@ngrx/store';
-import { TodoService } from '../../../../core/application/services/todo.service';
-import { selectTodos, selectLoading } from '../../../../store/selectors/todo.selectors';
-import * as TodoActions from '../../../../store/actions/todo.actions';
+import { TodoService } from '@core/application/services/todo.service';
+import { selectTodos, selectLoading } from '@store/selectors/todo.selectors';
+import * as TodoActions from '@store/actions/todo.actions';
 
 @Component({
   standalone: true,

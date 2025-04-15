@@ -22,10 +22,12 @@ describe('Todo Model', () => {
   describe('TodoCreateDto Interface', () => {
     it('should have required properties', () => {
       const dto: TodoCreateDto = {
-        title: 'Test Todo'
+        title: 'Test Todo',
+        completed: false
       };
 
       expect(dto.title).toBeDefined();
+      expect(dto.completed).toBeDefined();
     });
   });
 

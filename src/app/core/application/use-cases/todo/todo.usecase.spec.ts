@@ -1,28 +1,29 @@
 import { TestBed } from '@angular/core/testing';
 import { TodoUseCase } from './todo.usecase';
-import { TodoRepository } from '../../../domain/repositories/todo.repository';
-import { Todo, TodoCreateDto, TodoUpdateDto } from '../../../domain/models/todo.model';
+import { TodoRepository } from '@core/domain/repositories/todo.repository';
+import { Todo, TodoCreateDto, TodoUpdateDto } from '@core/domain/models/todo.model';
 import { of } from 'rxjs';
+import { TODO_REPOSITORY } from '@core/core.tokens';
 
 describe('TodoUseCase', () => {
   let useCase: TodoUseCase;
-  let repository: jest.Mocked<TodoRepository>;
+  let repository: jasmine.SpyObj<TodoRepository>;
 
   beforeEach(() => {
-    repository = {
-      getAll: jest.fn(),
-      getById: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      toggle: jest.fn(),
-      clearCompleted: jest.fn()
-    };
+    repository = jasmine.createSpyObj('TodoRepository', [
+      'getAll',
+      'getById',
+      'create',
+      'update',
+      'delete',
+      'toggle',
+      'clearCompleted'
+    ]);
 
     TestBed.configureTestingModule({
       providers: [
         TodoUseCase,
-        { provide: TodoRepository, useValue: repository }
+        { provide: TODO_REPOSITORY, useValue: repository }
       ]
     });
 
@@ -42,7 +43,7 @@ describe('TodoUseCase', () => {
         createdAt: new Date(),
         updatedAt: new Date()
       }];
-      repository.getAll.mockReturnValue(of(todos));
+      repository.getAll.and.returnValue(of(todos));
 
       useCase.getAll().subscribe(result => {
         expect(result).toEqual(todos);
@@ -60,7 +61,7 @@ describe('TodoUseCase', () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      repository.getById.mockReturnValue(of(todo));
+      repository.getById.and.returnValue(of(todo));
 
       useCase.getById(1).subscribe(result => {
         expect(result).toEqual(todo);
@@ -71,15 +72,17 @@ describe('TodoUseCase', () => {
 
   describe('create', () => {
     it('should create todo using repository', () => {
-      const dto: TodoCreateDto = { title: 'Test Todo' };
+      const dto: TodoCreateDto = { 
+        title: 'Test Todo',
+        completed: false
+      };
       const todo: Todo = {
         id: 1,
         ...dto,
-        completed: false,
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      repository.create.mockReturnValue(of(todo));
+      repository.create.and.returnValue(of(todo));
 
       useCase.create(dto).subscribe(result => {
         expect(result).toEqual(todo);
@@ -98,7 +101,7 @@ describe('TodoUseCase', () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      repository.update.mockReturnValue(of(todo));
+      repository.update.and.returnValue(of(todo));
 
       useCase.update(1, dto).subscribe(result => {
         expect(result).toEqual(todo);
@@ -109,7 +112,7 @@ describe('TodoUseCase', () => {
 
   describe('delete', () => {
     it('should delete todo using repository', () => {
-      repository.delete.mockReturnValue(of(void 0));
+      repository.delete.and.returnValue(of(void 0));
 
       useCase.delete(1).subscribe(result => {
         expect(result).toBeUndefined();
@@ -127,7 +130,7 @@ describe('TodoUseCase', () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      repository.toggle.mockReturnValue(of(todo));
+      repository.toggle.and.returnValue(of(todo));
 
       useCase.toggle(1).subscribe(result => {
         expect(result).toEqual(todo);
@@ -138,7 +141,7 @@ describe('TodoUseCase', () => {
 
   describe('clearCompleted', () => {
     it('should clear completed todos using repository', () => {
-      repository.clearCompleted.mockReturnValue(of(void 0));
+      repository.clearCompleted.and.returnValue(of(void 0));
 
       useCase.clearCompleted().subscribe(result => {
         expect(result).toBeUndefined();

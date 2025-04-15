@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Todo, TodoCreateDto, TodoUpdateDto } from '@core/domain/models/todo.model';
 import { TodoRepository } from '@core/domain/repositories/todo.repository';
-import { TODO_REPOSITORY } from '@core/core.module';
+import { TODO_REPOSITORY } from '@core/core.tokens';
 
 @Injectable({
   providedIn: 'root'
