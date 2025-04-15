@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TodoService } from '../../../core/services/todo.service';
+import { TodoService } from '../../../core/application/services/todo.service';
 
 @Component({
   selector: 'app-header',
