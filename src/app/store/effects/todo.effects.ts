@@ -1,14 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, mergeMap, catchError, take } from 'rxjs/operators';
 import { TodoService } from '@core/services/todo.service';
 import * as TodoActions from '@store/actions/todo.actions';
 import { Store } from '@ngrx/store';
-import { selectTodos } from '@store/selectors/todo.selectors';
+import { TodoRepository } from '@core/domain/repositories/todo.repository';
+import { TODO_REPOSITORY } from '@core/core.tokens';
 
 @Injectable()
 export class TodoEffects {
+
+  constructor(
+    private actions$: Actions,
+    private todoService: TodoService,
+    private store: Store,
+    @Inject(TODO_REPOSITORY) private repository: TodoRepository
+  ) {}
+
   loadTodos$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.loadTodos),
@@ -24,57 +33,55 @@ export class TodoEffects {
   addTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.addTodo),
-      mergeMap(({ todo }) => {
-        return of(TodoActions.addTodoSuccess({ todo }));
-      })
+      mergeMap(({ todo }) =>
+        this.repository.create(todo).pipe(
+          map(todo => TodoActions.addTodoSuccess({ todo })),
+          catchError(error => of(TodoActions.addTodoFailure({ error: error.message })))
+        )
+      )
     )
   );
 
   toggleTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.toggleTodo),
-      mergeMap(({ id }) => {
-        return this.store.select(selectTodos).pipe(
-          take(1),
-          map(todos => {
-            const todo = todos.find(t => t.id === id);
-            if (!todo) {
-              throw new Error('Todo not found');
-            }
-            return TodoActions.toggleTodoSuccess({ 
-              todo: { 
-                ...todo,
-                completed: !todo.completed,
-                updatedAt: new Date()
-              } 
-            });
-          })
-        );
-      })
+      mergeMap(({ id }) =>
+        this.repository.toggle(id).pipe(
+          map(todo => TodoActions.toggleTodoSuccess({ todo })),
+          catchError(error => of(TodoActions.toggleTodoFailure({ error: error.message })))
+        )
+      )
     )
   );
 
   deleteTodo$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.deleteTodo),
-      mergeMap(({ id }) => {
-        return of(TodoActions.deleteTodoSuccess({ id }));
-      })
+      mergeMap(({ id }) =>
+        this.repository.delete(id).pipe(
+          map(() => TodoActions.deleteTodoSuccess({ id })),
+          catchError(error => of(TodoActions.deleteTodoFailure({ error: error.message })))
+        )
+      )
     )
   );
 
   clearCompleted$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TodoActions.clearCompleted),
-      mergeMap(() => {
-        return of(TodoActions.clearCompletedSuccess());
-      })
+      mergeMap(() =>
+        this.repository.clearCompleted().pipe(
+          mergeMap(() =>
+            this.repository.getAll().pipe(
+              map(todos => {
+                const activeTodos = todos.filter(todo => !todo.completed);
+                return TodoActions.clearCompletedSuccess();
+              })
+            )
+          ),
+          catchError(error => of(TodoActions.clearCompletedFailure({ error: error.message })))
+        )
+      )
     )
   );
-
-  constructor(
-    private actions$: Actions,
-    private todoService: TodoService,
-    private store: Store
-  ) {}
 }
