@@ -66,22 +66,4 @@ export class TodoEffects {
     )
   );
 
-  clearCompleted$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TodoActions.clearCompleted),
-      mergeMap(() =>
-        this.repository.clearCompleted().pipe(
-          mergeMap(() =>
-            this.repository.getAll().pipe(
-              map(todos => {
-                const activeTodos = todos.filter(todo => !todo.completed);
-                return TodoActions.clearCompletedSuccess();
-              })
-            )
-          ),
-          catchError(error => of(TodoActions.clearCompletedFailure({ error: error.message })))
-        )
-      )
-    )
-  );
 }
